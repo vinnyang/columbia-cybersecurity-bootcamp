@@ -4,7 +4,7 @@ The files in this repository were used to configure the network depicted below.
 
 ![](Diagrams/Cloud-Diagram.png)
 
-These files have been tested and used to generate a live ELK deployment on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the _____ file may be used to install only certain pieces of it, such as Filebeat.
+These files have been tested and used to generate a live ELK deployment on Azure. They can be used to either recreate the entire deployment pictured above. Alternatively, select portions of the YAML file may be used to install only certain pieces of it, such as Filebeat.
 
   - [Filebeat Playbook](Ansible/filebeat-playbook.yml)
 
@@ -89,9 +89,24 @@ These Beats allow us to collect the following information from each machine:
 In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned:
 
 SSH into the control node and follow the steps below:
-- Copy the playbook file to /etc/ansible.
-- Update the host file to include IPs of the target machines as groups, and refer to these group names in the playbooks
+- Copy the playbook files to `/etc/ansible` and config files for Filebeat and Metricbeat into `/etc/ansible/files`.
+
+- Update the `hosts` file to include IPs of the target machines as groups, and refer to the corresponding group names in the playbooks
+```
+# hosts
+[elk]
+10.1.0.4 ansible_python_interpreter=/usr/bin/python3
+```
+``` yml
+#elk stack vm playbook
+---
+- name: Configure Elk VM with Docker
+  hosts: elk
+```
+
 - Run the playbook, and navigate to the LB's public IP to check that the installation worked as expected.
 ```bash
-$ ansible-play /etc/ansible/filebeat-playbook.yml
+$ ansible-playbook /etc/ansible/install-elk.yml
+$ ansible-playbook /etc/ansible/metricbeat-playbook.yml
+$ ansible-playbook /etc/ansible/filebeat-playbook.yml
 ```
